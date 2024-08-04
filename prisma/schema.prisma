@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int          @id @default(autoincrement())
+  name           String       @db.VarChar(255)
+  email          String       @unique @db.VarChar(255)
+  password       String       @db.VarChar(255)
+  nip            String?      @db.VarChar(255)
+  employeeStatus String?      @db.VarChar(255)
+  role           String       @db.VarChar(255)
+  photo          String?      @db.VarChar(255)
+  qrCode         String?      @unique @db.VarChar(255)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  accessToken    AccessToken?
+  absent         Absent[]
+  Permission     Permission[]
+
+  @@map("user")
+}
+
+model AccessToken {
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int       @unique
+  token     String?   @unique @db.VarChar(255)
+  expired   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+
+  @@map("access_token")
+}
+
+model AbsentDate {
+  id          String   @id
+  date        DateTime @unique @db.Date
+  dayStatus   String   @db.VarChar(100)
+  information String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  absent      Absent[]
+
+  @@map("absent_date")
+}
+
+model Absent {
+  id            String     @id
+  absentDate    AbsentDate @relation(fields: [absentDateId], references: [id])
+  absentDateId  String
+  user          User       @relation(fields: [userId], references: [id])
+  userId        Int
+  status        String?    @db.VarChar(100)
+  arrivalAbsent Boolean
+  returnAbsent  Boolean
+  information   String?    @db.Text
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
+
+  @@map("absent")
+}
+
+model Permission {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  permission  String   @db.VarChar(255)
+  information String?  @db.Text
+  photo       String?  @db.VarChar(255)
+  verify      String   @db.VarChar(50)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@map("permission")
+}
