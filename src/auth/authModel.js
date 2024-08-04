@@ -1,78 +1,190 @@
 const prisma = require("../config/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const otpGenerator = require("otp-generator");
+const nodemailer = require("../config/nodemailer");
 
 class AuthModel {
   async login(email, password) {
-    const currentDate = new Date();
+    try {
+      const currentDate = new Date();
 
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: true,
-        photo: true,
-        role: true,
-        nip: true,
-        employeeStatus: true,
-        accessToken: {
-          select: {
-            id: true,
-            token: true,
-            expired: true,
+      const user = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          password: true,
+          photo: true,
+          role: true,
+          nip: true,
+          employeeStatus: true,
+          accessToken: {
+            select: {
+              id: true,
+              token: true,
+              expired: true,
+            },
           },
         },
-      },
-    });
-
-    if (!user) {
-      return {
-        status: false,
-        message: "Email atau password salah",
-        code: 401,
-      };
-    }
-
-    if (bcrypt.compareSync(password, user.password)) {
-      return {
-        status: false,
-        message: "Email atau password salah",
-        code: 401,
-      };
-    }
-
-    // Check token not exist
-    if (!user.accessToken) {
-      const saveAccessToken = await prisma.accessToken.create({
-        data: {
-          userId: user.id,
-          token: "",
-        },
       });
 
-      const payload = {
-        id: saveAccessToken.id,
-      };
+      if (!user) {
+        return {
+          status: false,
+          message: "Email atau password salah",
+          code: 401,
+        };
+      }
 
-      const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "7d",
-      });
+      if (bcrypt.compareSync(password, user.password)) {
+        return {
+          status: false,
+          message: "Email atau password salah",
+          code: 401,
+        };
+      }
 
-      const expired = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+      // Check token not exist
+      if (!user.accessToken) {
+        const saveAccessToken = await prisma.accessToken.create({
+          data: {
+            userId: user.id,
+            token: "",
+          },
+        });
 
-      const updateAccessToken = await prisma.accessToken.update({
-        where: {
+        const payload = {
           id: saveAccessToken.id,
-        },
-        data: {
+        };
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "7d",
+        });
+
+        const expired = new Date(
+          currentDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+        );
+
+        const updateAccessToken = await prisma.accessToken.update({
+          where: {
+            id: saveAccessToken.id,
+          },
+          data: {
+            token,
+            expired,
+          },
+        });
+
+        const resData = {
+          name: user.name,
+          email: user.email,
+          photo: user.photo,
+          role: user.role,
+          nip: user.nip,
+          employeeStatus: user.employeeStatus,
           token,
-          expired,
-        },
-      });
+          expiresIn: expired.toISOString(),
+        };
+
+        return {
+          status: true,
+          message: "Berhasil login",
+          data: resData,
+          code: 200,
+        };
+      }
+
+      if (!user.accessToken.token) {
+        const payload = {
+          id: user.accessToken.id,
+        };
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "7d",
+        });
+
+        const expired = new Date(
+          currentDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+        );
+
+        const updateAccessToken = await prisma.accessToken.update({
+          where: {
+            id: payload.id,
+          },
+          data: {
+            token,
+            expired,
+          },
+        });
+
+        const resData = {
+          name: user.name,
+          email: user.email,
+          photo: user.photo,
+          role: user.role,
+          nip: user.nip,
+          employeeStatus: user.employeeStatus,
+          token,
+          expiresIn: expired.toISOString(),
+        };
+
+        return {
+          status: true,
+          message: "Berhasil login",
+          data: resData,
+          code: 200,
+        };
+      }
+
+      let token = user.accessToken.token;
+      const decodedToken = jwt.decode(token);
+
+      // Check token if expired
+      if (decodedToken.exp * 1000 <= new Date().getTime()) {
+        const payload = {
+          id: user.accessToken.id,
+        };
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "7d",
+        });
+
+        const expired = new Date(
+          currentDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+        );
+
+        const updateAccessToken = await prisma.accessToken.update({
+          where: {
+            id: payload.id,
+          },
+          data: {
+            token,
+            expired,
+          },
+        });
+
+        const resData = {
+          name: user.name,
+          email: user.email,
+          photo: user.photo,
+          role: user.role,
+          nip: user.nip,
+          employeeStatus: user.employeeStatus,
+          token,
+          expiresIn: expired.toISOString(),
+        };
+
+        return {
+          status: true,
+          message: "Berhasil login",
+          data: resData,
+          code: 200,
+        };
+      }
 
       const resData = {
         name: user.name,
@@ -81,8 +193,8 @@ class AuthModel {
         role: user.role,
         nip: user.nip,
         employeeStatus: user.employeeStatus,
-        token,
-        expiresIn: expired.toISOString(),
+        token: user.accessToken.token,
+        expiresIn: user.accessToken.expired.toISOString(),
       };
 
       return {
@@ -91,108 +203,153 @@ class AuthModel {
         data: resData,
         code: 200,
       };
-    }
-
-    if (!user.accessToken.token) {
-      const payload = {
-        id: user.accessToken.id,
+    } catch (error) {
+      console.error("login module error", error);
+      return {
+        status: false,
+        message: error.message,
+        code: 500,
       };
+    }
+  }
 
-      const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "7d",
-      });
-
-      const expired = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-      const updateAccessToken = await prisma.accessToken.update({
+  async forgotPassword(email) {
+    try {
+      const getOneUser = await prisma.user.findUnique({
         where: {
-          id: payload.id,
+          email,
         },
-        data: {
-          token,
-          expired,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          otp: {
+            select: {
+              id: true,
+              userId: true,
+              email: true,
+              otp: true,
+            },
+          },
         },
       });
 
-      const resData = {
-        name: user.name,
-        email: user.email,
-        photo: user.photo,
-        role: user.role,
-        nip: user.nip,
-        employeeStatus: user.employeeStatus,
-        token,
-        expiresIn: expired.toISOString(),
-      };
+      if (!getOneUser) {
+        return {
+          status: false,
+          message: "Email tidak ditemukan",
+          code: 404,
+        };
+      }
 
-      return {
-        status: true,
-        message: "Berhasil login",
-        data: resData,
-        code: 200,
-      };
-    }
-
-    let token = user.accessToken.token;
-    const decodedToken = jwt.decode(token);
-
-    // Check token if expired
-    if (decodedToken.exp * 1000 <= new Date().getTime()) {
-      const payload = {
-        id: user.accessToken.id,
-      };
-
-      const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "7d",
+      const otp = otpGenerator.generate(6, {
+        upperCaseAlphabets: false,
+        specialChars: false,
       });
 
-      const expired = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+      const hashOtp = bcrypt.hashSync(otp, 12);
 
-      const updateAccessToken = await prisma.accessToken.update({
+      if (!getOneUser.otp) {
+        const createOtp = await prisma.oTP.create({
+          data: {
+            userId: getOneUser.id,
+            email: getOneUser.email,
+            otp: hashOtp,
+          },
+        });
+
+        await nodemailer.sendNodeMailer(otp, email);
+
+        return {
+          status: true,
+          message: "OTP Berhasil Dikirim",
+          code: 200,
+        };
+      }
+
+      const updateOtp = await prisma.oTP.update({
         where: {
-          id: payload.id,
+          userId: getOneUser.id,
         },
         data: {
-          token,
-          expired,
+          userId: getOneUser.id,
+          email: getOneUser.email,
+          otp: hashOtp,
         },
       });
 
-      const resData = {
-        name: user.name,
-        email: user.email,
-        photo: user.photo,
-        role: user.role,
-        nip: user.nip,
-        employeeStatus: user.employeeStatus,
-        token,
-        expiresIn: expired.toISOString(),
-      };
+      await nodemailer.sendNodeMailer(otp, email);
 
       return {
         status: true,
-        message: "Berhasil login",
-        data: resData,
+        message: "OTP Berhasil Dikirim",
         code: 200,
       };
+    } catch (error) {
+      console.error("forgotPassword module error", error);
+      return {
+        status: false,
+        message: error.message,
+        code: 500,
+      };
     }
+  }
 
-    const resData = {
-      name: user.name,
-      email: user.email,
-      photo: user.photo,
-      role: user.role,
-      nip: user.nip,
-      employeeStatus: user.employeeStatus,
-      token: user.accessToken.token,
-      expiresIn: user.accessToken.expired.toISOString(),
-    };
+  async resetPassword(email, otp, password) {
+    try {
+      const getOTP = await prisma.oTP.findUnique({
+        where: {
+          email,
+        },
+        select: {
+          id: true,
+          userId: true,
+          email: true,
+          otp: true,
+        },
+      });
 
-    return {
-      status: true,
-      message: "Berhasil login",
-      data: resData,
-      code: 200,
-    };
+      if (!getOTP) {
+        return {
+          status: false,
+          message: "OTP Tidak Ditemukan",
+          code: 404,
+        };
+      }
+
+      if (!bcrypt.compareSync(otp, getOTP.otp)) {
+        return {
+          status: false,
+          message: "OTP yang dimasukkan salah",
+          code: 400,
+        };
+      }
+
+      const hashPassword = bcrypt.hashSync(password, 12);
+
+      const updatePassword = await prisma.user.update({
+        where: {
+          email,
+        },
+        data: {
+          password: hashPassword,
+        },
+      });
+
+      return {
+        status: true,
+        message: "Password berhasil diubah",
+        code: 200,
+      };
+    } catch (error) {
+      console.error("resetPassword module error", error);
+      return {
+        status: false,
+        message: error.message,
+        code: 500,
+      };
+    }
   }
 }
+
+module.exports = new AuthModel();

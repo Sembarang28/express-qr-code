@@ -1,8 +1,9 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const routes = require("./src/routes");
 
 dotenv.config();
 const port = process.env.PORT || 8000;
@@ -20,6 +21,7 @@ app.use(
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use("/public", express.static("public"));
 
 app.get("/test", async function (req, res) {
   res.status(200).send({
@@ -27,6 +29,8 @@ app.get("/test", async function (req, res) {
     message: "Hello World!!",
   });
 });
+
+routes(app);
 
 app.listen(port, () => {
   console.log(`API is running on port ${port}`);

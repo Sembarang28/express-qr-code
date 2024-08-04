@@ -21,7 +21,8 @@ model User {
   updatedAt      DateTime     @default(now()) @updatedAt
   accessToken    AccessToken?
   absent         Absent[]
-  Permission     Permission[]
+  permission     Permission[]
+  otp            OTP?
 
   @@map("user")
 }
@@ -78,4 +79,16 @@ model Permission {
   updatedAt   DateTime @default(now()) @updatedAt
 
   @@map("permission")
+}
+
+model OTP {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+  email     String   @db.VarChar(255)
+  otp       String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("otp")
 }
