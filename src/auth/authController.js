@@ -5,7 +5,7 @@ const authModel = require("./authModel");
 
 const authController = new Router();
 
-authController.post("/login", async function (req, res) {
+authController.post("/login", async (req, res) => {
   const schema = Joi.object({
     email: Joi.string().required(),
     password: Joi.string()
@@ -36,7 +36,7 @@ authController.post("/login", async function (req, res) {
   return response(res, login);
 });
 
-authController.post("/forgot", async function (req, res) {
+authController.post("/forgot", async (req, res) => {
   const schema = Joi.object({
     email: Joi.string().required(),
   });
@@ -62,7 +62,7 @@ authController.post("/forgot", async function (req, res) {
   return response(res, forgotPassword);
 });
 
-authController.post("/reset", async function (req, res) {
+authController.post("/reset", async (req, res) => {
   const schema = Joi.object({
     email: Joi.string().required(),
     otp: Joi.string().required(),
