@@ -32,9 +32,17 @@ class UserModel {
     }
   }
 
-  async readAllUser() {
+  async readAllUser(search) {
     try {
       const readAllUser = await prisma.user.findMany({
+        where: {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { nip: { contains: search, mode: "insensitive" } },
+            { employeeStatus: { contains: search, mode: "insensitive" } },
+            { role: { contains: search, mode: "insensitive" } },
+          ],
+        },
         select: {
           id: true,
           name: true,

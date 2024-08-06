@@ -49,7 +49,8 @@ userController.post("/", multer.userImg("image"), async (req, res) => {
 });
 
 userController.get("/all", async (req, res) => {
-  const readAllUsers = await userModel.readAllUser();
+  const { search } = req.query;
+  const readAllUsers = await userModel.readAllUser(search);
   return response(res, readAllUsers);
 });
 
