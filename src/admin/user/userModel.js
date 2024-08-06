@@ -90,7 +90,7 @@ class UserModel {
 
       return {
         status: true,
-        message: `Data user ${readUserById.name} berhasil ditemukan`,
+        message: `Data user berhasil ditemukan`,
         code: 200,
         data: readUserById,
       };
@@ -133,7 +133,7 @@ class UserModel {
 
       return {
         status: true,
-        message: `Data user ${updateUserAccountById.name} berhasil diubah`,
+        message: `Data user berhasil diubah`,
         code: 200,
       };
     } catch (error) {
@@ -161,7 +161,7 @@ class UserModel {
 
       return {
         status: true,
-        message: `Password user ${updateUserPasswordById.name} berhasil diubah`,
+        message: `Password user berhasil diubah`,
         code: 200,
       };
     } catch (error) {
@@ -186,7 +186,7 @@ class UserModel {
 
       return {
         status: true,
-        message: `Data user ${deleteUserAccountById.name} berhasil dihapus`,
+        message: `Data user berhasil dihapus`,
         code: 200,
       };
     } catch (error) {
