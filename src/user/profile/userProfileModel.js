@@ -1,49 +1,8 @@
 const prisma = require("../../config/db");
-const bcrypt = require("bcrypt");
 const fs = require("fs");
+const bcrypt = require("bcrypt");
 
-class AdminProfileModel {
-  async readDashboardData(reqData) {
-    try {
-      const date = new Date(reqData);
-
-      const countUser = await prisma.user.count({
-        skip: 1,
-      });
-
-      const countAbsentToday = await prisma.absent.count({
-        where: {
-          status: "Hadir",
-          absentDate: {
-            date,
-          },
-        },
-      });
-
-      const countNotAbsentToday = countUser - countAbsentToday;
-
-      const resData = {
-        countUser,
-        countAbsentToday,
-        countNotAbsentToday,
-      };
-
-      return {
-        status: true,
-        message: "Data berhasil ditemukan",
-        code: 200,
-        data: resData,
-      };
-    } catch (error) {
-      console.error("readDashboardData module error: ", error);
-      return {
-        status: false,
-        message: error.message,
-        code: 500,
-      };
-    }
-  }
-
+class UserProfileModel {
   async readUserProfile(id) {
     try {
       const readUserById = await prisma.user.findUnique({
@@ -168,4 +127,4 @@ class AdminProfileModel {
   }
 }
 
-module.exports = new AdminProfileModel();
+module.exports = new UserProfileModel();
