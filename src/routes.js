@@ -1,9 +1,11 @@
 const adminRoutes = require("./admin/adminRoutes");
 const authController = require("./auth/authController");
+const userRoutes = require("./user/userRoutes");
 
 const listRoutes = [
   ["/auth", authController],
   ["/admin", adminRoutes],
+  ["/user", userRoutes],
 ];
 
 function routes(app) {

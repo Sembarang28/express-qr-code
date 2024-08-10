@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const userAbsentModel = require("./userAbsentModel");
 const response = require("../../config/response");
+const Joi = require("joi");
 
 const userAbsentController = new Router();
 

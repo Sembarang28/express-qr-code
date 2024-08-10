@@ -3,6 +3,7 @@ const userProfileModel = require("./userProfileModel");
 const response = require("../../config/response");
 const multer = require("../../config/multer");
 const sharp = require("../../config/sharp");
+const Joi = require("joi");
 
 const userProfileController = new Router();
 
@@ -90,7 +91,7 @@ userProfileController.put("/", multer.userImg("image"), async (req, res) => {
   }
 
   const imageName = sharp.filename;
-  const imagePath = imageName ? `assets/userimg/${imageName}` : null;
+  const imagePath = imageName ? `assets/userImg/${imageName}` : null;
 
   const updateUserProfile = await userProfileModel.updateUserProfile(
     id,

@@ -3,6 +3,7 @@ const multer = require("../../config/multer");
 const sharp = require("../../config/sharp");
 const permissionModel = require("./permissionModel");
 const response = require("../../config/response");
+const Joi = require("joi");
 
 const adminPermissionController = new Router();
 

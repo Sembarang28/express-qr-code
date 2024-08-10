@@ -3,6 +3,7 @@ const response = require("../../config/response");
 const profileModel = require("./profileModel");
 const multer = require("../../config/multer");
 const sharp = require("../../config/sharp");
+const Joi = require("joi");
 
 const adminProfileController = new Router();
 
