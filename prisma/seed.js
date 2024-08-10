@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const prisma = require("../src/config/db");
+const { nanoid } = require("nanoid");
 
 async function main() {
   const password = bcrypt.hashSync("12345678", 12);
@@ -7,12 +8,14 @@ async function main() {
   const user = await prisma.user.createMany({
     data: [
       {
+        id: nanoid(16),
         name: "Root Admin",
         email: "rootadmin@gmail.com",
         password,
         role: "admin",
       },
       {
+        id: nanoid(16),
         name: "John Doe",
         email: "agilfikriawan020328@gmail.com",
         password,
