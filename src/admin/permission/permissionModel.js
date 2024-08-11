@@ -130,6 +130,9 @@ class AdminPermissionModel {
         date: readPermissionById.createdAt.toISOString().split("T")[0],
       };
 
+      delete permissionData.user;
+      delete permissionData.createdAt;
+
       return {
         status: true,
         message: "Data berhasil ditemukan",
@@ -149,14 +152,18 @@ class AdminPermissionModel {
   async updatePermissionById(id, reqData, photo) {
     try {
       let photoUrl = "";
-      const readPermissionById = await this.readPermissionById(id);
+      const readPermissionById = await prisma.permission.findUnique({
+        where: {
+          id,
+        },
+      });
 
       if (photo) {
-        const oldPhoto = readPermissionById.data.photo;
+        const oldPhoto = readPermissionById.photo;
         photoUrl = photo;
         oldPhoto ? fs.unlinkSync(oldPhoto) : null;
       } else {
-        photoUrl = readPermissionById.data.photo;
+        photoUrl = readPermissionById.photo;
       }
 
       const updatePermissionById = await prisma.permission.update({

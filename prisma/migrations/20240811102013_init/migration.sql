@@ -56,7 +56,7 @@ CREATE TABLE "absent" (
 
 -- CreateTable
 CREATE TABLE "permission" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
     "permission" VARCHAR(255) NOT NULL,
     "information" TEXT,

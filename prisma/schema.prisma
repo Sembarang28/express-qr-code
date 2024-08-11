@@ -68,7 +68,7 @@ model Absent {
 }
 
 model Permission {
-  id          String   @id @default(uuid())
+  id          Int      @id @default(autoincrement())
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   permission  String   @db.VarChar(255)
