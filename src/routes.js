@@ -10,7 +10,7 @@ const listRoutes = [
 
 function routes(app) {
   listRoutes.forEach((route) => {
-    app.use(`/api/${route[0]}`, route[1]);
+    app.use(`/api${route[0]}`, route[1]);
   });
 }
 

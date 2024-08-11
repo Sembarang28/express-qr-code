@@ -9,11 +9,11 @@ class Multer {
     this.uploadPermissionImg = multer({ storage: this.storagePermissionImg });
   }
 
-  async userImg(image) {
+  userImg(image) {
     return this.uploadUserImg.single(image);
   }
 
-  async permissionImg(image) {
+  permissionImg(image) {
     return this.uploadPermissionImg.single(image);
   }
 }

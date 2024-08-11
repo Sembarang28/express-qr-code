@@ -8,14 +8,14 @@ async function main() {
   const user = await prisma.user.createMany({
     data: [
       {
-        id: nanoid(16),
+        id: nanoid(10),
         name: "Root Admin",
         email: "rootadmin@gmail.com",
         password,
         role: "admin",
       },
       {
-        id: nanoid(16),
+        id: nanoid(10),
         name: "John Doe",
         email: "agilfikriawan020328@gmail.com",
         password,

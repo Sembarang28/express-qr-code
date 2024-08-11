@@ -6,7 +6,7 @@ const response = require("../../config/response");
 const sharp = require("../../config/sharp");
 const userModel = require("./userModel");
 
-const userController = Router();
+const userController = new Router();
 
 userController.post("/", multer.userImg("image"), async (req, res) => {
   const schema = Joi.object({

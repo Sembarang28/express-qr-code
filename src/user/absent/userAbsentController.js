@@ -5,7 +5,7 @@ const Joi = require("joi");
 
 const userAbsentController = new Router();
 
-userAbsentController("/", async (req, res) => {
+userAbsentController.post("/", async (req, res) => {
   const userId = req.user.id;
   const schema = Joi.object({
     date: Joi.string().required(),

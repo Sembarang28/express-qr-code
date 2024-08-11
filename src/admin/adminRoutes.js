@@ -1,10 +1,10 @@
 const { Router } = require("express");
-const userController = require("./user/userController");
 const adminSession = require("./middleware/adminSession");
+const adminAbsentController = require("./absent/absentController");
+const userController = require("./user/userController");
 const adminProfileController = require("./profile/profileController");
 const adminPermissionController = require("./permission/permissionController");
 const adminAbsentDateController = require("./absentDate/absentDateController");
-const adminAbsentController = require("./absent/absentController");
 
 const adminRoutes = new Router();
 

@@ -22,6 +22,7 @@ class AuthModel {
           role: true,
           nip: true,
           employeeStatus: true,
+          qrCode: true,
           accessToken: {
             select: {
               id: true,
@@ -40,7 +41,7 @@ class AuthModel {
         };
       }
 
-      if (bcrypt.compareSync(password, user.password)) {
+      if (!bcrypt.compareSync(password, user.password)) {
         return {
           status: false,
           message: "Email atau password salah",
@@ -87,6 +88,7 @@ class AuthModel {
           nip: user.nip,
           employeeStatus: user.employeeStatus,
           token,
+          qrCode: user.qrCode,
           expiresIn: expired.toISOString(),
         };
 
@@ -129,14 +131,15 @@ class AuthModel {
           nip: user.nip,
           employeeStatus: user.employeeStatus,
           token,
+          qrCode: user.qrCode,
           expiresIn: expired.toISOString(),
         };
 
         return {
           status: true,
           message: "Berhasil login",
-          data: resData,
           code: 200,
+          data: resData,
         };
       }
 
@@ -175,6 +178,7 @@ class AuthModel {
           nip: user.nip,
           employeeStatus: user.employeeStatus,
           token,
+          qrCode: user.qrCode,
           expiresIn: expired.toISOString(),
         };
 
@@ -194,6 +198,7 @@ class AuthModel {
         nip: user.nip,
         employeeStatus: user.employeeStatus,
         token: user.accessToken.token,
+        qrCode: user.qrCode,
         expiresIn: user.accessToken.expired.toISOString(),
       };
 
@@ -204,7 +209,7 @@ class AuthModel {
         code: 200,
       };
     } catch (error) {
-      console.error("login module error", error);
+      console.log("login module error", error);
       return {
         status: false,
         message: error.message,
@@ -286,7 +291,7 @@ class AuthModel {
         code: 200,
       };
     } catch (error) {
-      console.error("forgotPassword module error", error);
+      console.log("forgotPassword module error", error);
       return {
         status: false,
         message: error.message,
@@ -297,9 +302,11 @@ class AuthModel {
 
   async resetPassword(email, otp, password) {
     try {
-      const getOTP = await prisma.oTP.findUnique({
+      const getOTP = await prisma.oTP.findFirst({
         where: {
-          email,
+          user: {
+            email,
+          },
         },
         select: {
           id: true,
@@ -312,7 +319,7 @@ class AuthModel {
       if (!getOTP) {
         return {
           status: false,
-          message: "OTP Tidak Ditemukan",
+          message: "Email Tidak Ditemukan",
           code: 404,
         };
       }
@@ -342,7 +349,7 @@ class AuthModel {
         code: 200,
       };
     } catch (error) {
-      console.error("resetPassword module error", error);
+      console.log("resetPassword module error", error);
       return {
         status: false,
         message: error.message,

@@ -70,7 +70,7 @@ absentDateController.get("/all", async (req, res) => {
   return response(res, readAllAbsentDate);
 });
 
-absentDateModel.get("/:absentDateId", async (req, res) => {
+absentDateController.get("/:absentDateId", async (req, res) => {
   const { absentDateId } = req.params;
   const readAbsentDateById =
     await absentDateModel.readAbsentDateById(absentDateId);
