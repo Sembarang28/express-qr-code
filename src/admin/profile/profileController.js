@@ -66,12 +66,12 @@ adminProfileController.put("/pass", async (req, res) => {
 });
 
 adminProfileController.put("/", multer.userImg("image"), async (req, res) => {
+  const { id } = req.user;
   const schema = Joi.object({
     name: Joi.string().required(),
     email: Joi.string().required(),
     nip: Joi.optional(),
     employeeStatus: Joi.optional(),
-    role: Joi.string().required(),
     image: Joi.optional(),
   });
 
