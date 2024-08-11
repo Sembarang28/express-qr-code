@@ -1,5 +1,4 @@
 const { Router } = require("express");
-const adminSession = require("../middleware/adminSession");
 const multer = require("../../config/multer");
 const Joi = require("joi");
 const response = require("../../config/response");
@@ -56,7 +55,7 @@ userController.get("/all", async (req, res) => {
 
 userController.get("/:userId", async (req, res) => {
   const { userId } = req.params;
-  const readUserById = await userModel.readUserById(Number(userId));
+  const readUserById = await userModel.readUserById(userId);
   return response(res, readUserById);
 });
 
@@ -88,13 +87,13 @@ userController.put("/pass/:userId", async (req, res) => {
   }
 
   const updateUserPasswordById = await userModel.updateUserPasswordById(
-    Number(userId),
+    userId,
     req.body,
   );
-  return response(req, updateUserPasswordById);
+  return response(res, updateUserPasswordById);
 });
 
-userController.put("/:userId", async (req, res) => {
+userController.put("/:userId", multer.userImg("image"), async (req, res) => {
   const { userId } = req.params;
   const schema = Joi.object({
     name: Joi.string().required(),
@@ -122,23 +121,24 @@ userController.put("/:userId", async (req, res) => {
   }
 
   if (req.file) {
-    sharp.userImg(file);
+    sharp.userImg(req.file);
   }
 
   const imageName = sharp.filename;
   const imagePath = imageName ? `public/userImg/${imageName}` : "";
 
   const updateUserById = await userModel.updateUserAccountById(
-    Number(userId),
+    userId,
     req.body,
     imagePath,
   );
+  sharp.filename = "";
   return response(res, updateUserById);
 });
 
 userController.delete("/:userId", async (req, res) => {
   const { userId } = req.params;
-  const deleteUserById = await userModel.deleteUser(Number(userId));
+  const deleteUserById = await userModel.deleteUser(userId);
   return response(res, deleteUserById);
 });
 

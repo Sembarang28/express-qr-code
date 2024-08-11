@@ -1,6 +1,7 @@
 const prisma = require("../../config/db");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
+const { nanoid } = require("nanoid");
 
 class UserModel {
   async creatUser(reqData, photo) {
@@ -8,13 +9,16 @@ class UserModel {
       const password = bcrypt.hashSync(reqData.password, 12);
 
       const createUser = await prisma.user.create({
-        name: reqData.name,
-        email: reqData.email,
-        password,
-        nip: reqData.nip,
-        employeeStatus: reqData.employeeStatus,
-        role: reqData.role,
-        photo,
+        data: {
+          id: nanoid(16),
+          name: reqData.name,
+          email: reqData.email,
+          password,
+          nip: reqData.nip,
+          employeeStatus: reqData.employeeStatus,
+          role: reqData.role,
+          photo,
+        },
       });
 
       return {
@@ -85,7 +89,7 @@ class UserModel {
         where: {
           id,
         },
-        data: {
+        select: {
           id: true,
           name: true,
           email: true,
