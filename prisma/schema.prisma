@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id             String       @id @db.VarChar(20)
+  id             String       @id @default(uuid())
   name           String       @db.VarChar(255)
   email          String       @unique @db.VarChar(255)
   password       String       @db.VarChar(255)
@@ -40,7 +40,7 @@ model AccessToken {
 }
 
 model AbsentDate {
-  id          String   @id @db.VarChar(20)
+  id          String   @id @default(uuid())
   date        DateTime @unique @db.Date
   dayStatus   String   @db.VarChar(100)
   information String?  @db.Text
@@ -52,7 +52,7 @@ model AbsentDate {
 }
 
 model Absent {
-  id            String     @id @db.VarChar(20)
+  id            String     @id @default(uuid())
   absentDate    AbsentDate @relation(fields: [absentDateId], references: [id], onDelete: Cascade)
   absentDateId  String
   user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -68,7 +68,7 @@ model Absent {
 }
 
 model Permission {
-  id          String   @id @db.VarChar(20)
+  id          String   @id @default(uuid())
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   permission  String   @db.VarChar(255)

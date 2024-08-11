@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "user" (
-    "id" VARCHAR(20) NOT NULL,
+    "id" TEXT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE "user" (
     "employeeStatus" VARCHAR(255),
     "role" VARCHAR(255) NOT NULL,
     "photo" VARCHAR(255),
-    "qrCode" VARCHAR(255),
+    "qrCode" VARCHAR(20),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -29,7 +29,7 @@ CREATE TABLE "access_token" (
 
 -- CreateTable
 CREATE TABLE "absent_date" (
-    "id" VARCHAR(20) NOT NULL,
+    "id" TEXT NOT NULL,
     "date" DATE NOT NULL,
     "dayStatus" VARCHAR(100) NOT NULL,
     "information" TEXT,
@@ -41,7 +41,7 @@ CREATE TABLE "absent_date" (
 
 -- CreateTable
 CREATE TABLE "absent" (
-    "id" VARCHAR(20) NOT NULL,
+    "id" TEXT NOT NULL,
     "absentDateId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "status" VARCHAR(100),
@@ -56,7 +56,7 @@ CREATE TABLE "absent" (
 
 -- CreateTable
 CREATE TABLE "permission" (
-    "id" VARCHAR(20) NOT NULL,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "permission" VARCHAR(255) NOT NULL,
     "information" TEXT,

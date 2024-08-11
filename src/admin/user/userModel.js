@@ -10,7 +10,6 @@ class UserModel {
 
       const createUser = await prisma.user.create({
         data: {
-          id: nanoid(16),
           name: reqData.name,
           email: reqData.email,
           password,
