@@ -76,6 +76,10 @@ class AdminAbsentDateModel {
         information: reqData.information,
       }));
 
+      const createManyAbsentDate = await prisma.absentDate.createMany({
+        data: absentDateData,
+      });
+
       const readAllAbsentDate = await prisma.absentDate.findMany({
         where: {
           date: {
@@ -102,6 +106,10 @@ class AdminAbsentDateModel {
           absentDateId: absent.id,
           userId: user.id,
         }));
+      });
+
+      const createManyAbsent = await prisma.absent.createMany({
+        data: absentData,
       });
 
       return {

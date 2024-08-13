@@ -58,8 +58,8 @@ model Absent {
   user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
   status        String?    @db.VarChar(100)
-  arrivalAbsent Boolean
-  returnAbsent  Boolean
+  arrivalAbsent Boolean?
+  returnAbsent  Boolean?
   information   String?    @db.Text
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @default(now()) @updatedAt

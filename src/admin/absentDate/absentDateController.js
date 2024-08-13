@@ -102,7 +102,7 @@ absentDateController.put("/:absentDateId", async (req, res) => {
   }
 
   const updateAbsentDateById = await absentDateModel.updateAbsentDateById(
-    Number(id),
+    absentDateId,
     req.body,
   );
   return response(res, updateAbsentDateById);
@@ -110,9 +110,8 @@ absentDateController.put("/:absentDateId", async (req, res) => {
 
 absentDateController.delete("/:absentDateId", async (req, res) => {
   const { absentDateId } = req.params;
-  const deleteAbsentDateById = await absentDateModel.deleteAbsentDateById(
-    Number(absentDateId),
-  );
+  const deleteAbsentDateById =
+    await absentDateModel.deleteAbsentDateById(absentDateId);
   return response(res, deleteAbsentDateById);
 });
 
