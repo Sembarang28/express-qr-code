@@ -5,7 +5,7 @@ const Joi = require("joi");
 
 const userAbsentController = new Router();
 
-userAbsentController.post("/", async (req, res) => {
+userAbsentController.get("/", async (req, res) => {
   const userId = req.user.id;
   const schema = Joi.object({
     date: Joi.string().required(),
@@ -29,7 +29,7 @@ userAbsentController.post("/", async (req, res) => {
   }
 
   const readAllAbsentMonth = await userAbsentModel.readAllAbsentsMonthByUserId(
-    req.body,
+    req.query,
     userId,
   );
   return response(res, readAllAbsentMonth);

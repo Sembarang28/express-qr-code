@@ -68,12 +68,9 @@ class UserAbsentModel {
             },
           },
         },
-        orderBy: {
-          name: true,
-        },
       });
 
-      if (!readAllAbsentsMonthByUserId.id) {
+      if (!readAllAbsentsMonthByUserId) {
         return {
           status: false,
           message: "Data tidak ditemukan",
@@ -94,12 +91,12 @@ class UserAbsentModel {
 
       const listAbsent = [];
 
-      readAllAbsentsMonthByUserId.Absent.forEach((absent) => {
+      readAllAbsentsMonthByUserId.absent.forEach((absent) => {
         const object = {
           absentDateId: absent.absentDateId,
           status: absent.status,
-          date: absent.AbsentDate.date.toISOString().split("T")[0],
-          dayStatus: absent.AbsentDate.dayStatus,
+          date: absent.absentDate.date.toISOString().split("T")[0],
+          dayStatus: absent.absentDate.dayStatus,
         };
 
         listAbsent.push(object);
