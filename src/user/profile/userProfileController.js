@@ -7,6 +7,12 @@ const Joi = require("joi");
 
 const userProfileController = new Router();
 
+userProfileController.get("/generate", async (req, res) => {
+  const { id } = req.user;
+  const readUserProfile = await userProfileModel.generateQRCode(id);
+  return response(res, readUserProfile);
+});
+
 userProfileController.get("/", async (req, res) => {
   const { id } = req.user;
   const readUserProfile = await userProfileModel.readUserProfile(id);

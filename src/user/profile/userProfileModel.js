@@ -1,8 +1,38 @@
 const prisma = require("../../config/db");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
+const { nanoid } = require("nanoid");
 
 class UserProfileModel {
+  async generateQRCode(id) {
+    try {
+      const qrCode = nanoid(20);
+
+      const updateQrId = await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          qrCode,
+        },
+      });
+
+      return {
+        status: true,
+        message: "QR berhasil dibuat",
+        code: 201,
+        data: qrCode,
+      };
+    } catch (error) {
+      console.error("generateQRId module error, ", error);
+      return {
+        status: false,
+        message: error.message,
+        code: 500,
+      };
+    }
+  }
+
   async readUserProfile(id) {
     try {
       const readUserById = await prisma.user.findUnique({
