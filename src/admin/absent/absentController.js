@@ -57,7 +57,7 @@ adminAbsentController.post("/", async (req, res) => {
     return response(res, responseBody);
   }
 
-  const createAbsent = absentModel.createAbsent(req.body);
+  const createAbsent = await absentModel.createAbsent(req.body);
   return response(res, createAbsent);
 });
 

@@ -90,27 +90,6 @@ class AbsentModel {
     }
   }
 
-  async createManyAbsent(reqData) {
-    try {
-      const createManyAbsent = await prisma.absent.createMany({
-        data: reqData,
-      });
-
-      return {
-        status: true,
-        message: "Data berhasil ditambahkan",
-        code: 201,
-      };
-    } catch (error) {
-      console.error("createManyAbsent module error: ", error);
-      return {
-        status: false,
-        message: error.message,
-        code: 500,
-      };
-    }
-  }
-
   async createAbsent(reqData) {
     try {
       const createAbsent = await prisma.absent.create({
@@ -392,7 +371,7 @@ class AbsentModel {
           },
         },
         orderBy: {
-          name: true,
+          name: "asc",
         },
       });
 
@@ -415,14 +394,14 @@ class AbsentModel {
 
         if (user.absent[0].absentDateId) {
           for (const absent of user.absent) {
-            if (!uniqueDates.has(absent.AbsentDate.date.toISOString())) {
-              uniqueDates.add(absent.AbsentDate.date.toISOString());
+            if (!uniqueDates.has(absent.absentDate.date.toISOString())) {
+              uniqueDates.add(absent.absentDate.date.toISOString());
 
               const absentObject = {
-                absentDateId: absent.absent_date_id,
+                absentDateId: absent.absentDateId,
                 status: absent.status,
-                date: absent.AbsentDate.date.toISOString().split("T")[0],
-                dayStatus: absent.AbsentDate.day_status,
+                date: absent.absentDate.date.toISOString().split("T")[0],
+                dayStatus: absent.absentDate.dayStatus,
               };
 
               listAbsent.push(absentObject);
@@ -471,7 +450,7 @@ class AbsentModel {
           absentDateId: true,
           absentDate: {
             select: {
-              date,
+              date: true,
             },
           },
           userId: true,
