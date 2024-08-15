@@ -1,6 +1,3 @@
-const {
-  deletePermissionById,
-} = require("../../admin/permission/permissionModel");
 const prisma = require("../../config/db");
 const fs = require("fs");
 
@@ -134,6 +131,9 @@ class UserPermissionModel {
         name: readPermissionById.user.name,
         date: readPermissionById.createdAt.toISOString().split("T")[0],
       };
+
+      delete permissionData.user;
+      delete permissionData.date;
 
       return {
         status: true,
