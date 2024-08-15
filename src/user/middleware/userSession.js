@@ -9,7 +9,7 @@ async function userPermission(req, res, next) {
       req.headers.authorization.startsWith("Bearer")
     ) {
       const token = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.JWT_KEY);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       if (!decoded) {
         const responseBody = {
@@ -61,12 +61,12 @@ async function userPermission(req, res, next) {
     }
   } catch (error) {
     console.log("userSession module Error: ", error);
-
-    return {
+    const responseBody = {
       status: false,
-      message: "Internal Server Error",
-      code: 500,
+      message: "Sesi telah berakhir, silahkan login ulang",
+      code: 401,
     };
+    return response(res, responseBody);
   }
 }
 

@@ -39,7 +39,7 @@ class UserProfileModel {
         where: {
           id,
         },
-        data: {
+        select: {
           id: true,
           name: true,
           email: true,
