@@ -69,14 +69,18 @@ class UserProfileModel {
   async updateUserProfile(id, reqData, photo) {
     try {
       let photoUrl = "";
-      const readUserAccountById = await this.readUserById(id);
+      const readUserAccountById = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
 
       if (photo) {
-        const oldPhoto = readUserAccountById.data.photo;
+        const oldPhoto = readUserAccountById.photo;
         photoUrl = photo;
         oldPhoto ? fs.unlinkSync(oldPhoto) : null;
       } else {
-        photoUrl = readUserAccountById.data.photo;
+        photoUrl = readUserAccountById.photo;
       }
 
       const updateUserAccountById = await prisma.user.update({
@@ -88,7 +92,6 @@ class UserProfileModel {
           email: reqData.email,
           nip: reqData.nip,
           employeeStatus: reqData.employeeStatus,
-          role: reqData.role,
           photo: photoUrl,
         },
       });

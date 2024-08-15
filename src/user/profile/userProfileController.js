@@ -20,6 +20,7 @@ userProfileController.get("/", async (req, res) => {
 });
 
 userProfileController.put("/pass", async (req, res) => {
+  const { id } = req.user;
   const schema = Joi.object({
     oldPassword: Joi.string().required(),
     confirmPassword: Joi.string().required(),
@@ -71,7 +72,6 @@ userProfileController.put("/", multer.userImg("image"), async (req, res) => {
     email: Joi.string().required(),
     nip: Joi.optional(),
     employeeStatus: Joi.optional(),
-    role: Joi.string().required(),
     image: Joi.optional(),
   });
 
@@ -97,7 +97,7 @@ userProfileController.put("/", multer.userImg("image"), async (req, res) => {
   }
 
   const imageName = sharp.filename;
-  const imagePath = imageName ? `assets/userImg/${imageName}` : null;
+  const imagePath = imageName ? `public/userImg/${imageName}` : null;
 
   const updateUserProfile = await userProfileModel.updateUserProfile(
     id,
