@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const routes = require("./src/routes");
+require("./src/config/cronjob");
 
 dotenv.config();
 const port = process.env.PORT || 8000;
