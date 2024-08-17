@@ -3,32 +3,9 @@ const prisma = require("../../config/db");
 class AbsentModel {
   async scanqr(reqData) {
     try {
-      const date = new Date(reqData.date);
-
-      const checkAbsentDate = await prisma.absentDate.findFirst({
-        where: {
-          date,
-        },
-        select: {
-          id: true,
-          date: true,
-          dayStatus: true,
-          information: true,
-        },
-      });
-
-      if (!checkAbsentDate) {
-        return {
-          status: false,
-          message:
-            "Gagal scan, absen hari ini belum tersedia, silahkan buat absen baru",
-          code: 400,
-        };
-      }
-
       const user = await prisma.user.findUnique({
         where: {
-          id: reqData.userId,
+          qrCode: reqData.qrcode,
         },
         select: {
           id: true,
@@ -41,43 +18,113 @@ class AbsentModel {
       if (!user) {
         return {
           status: false,
-          message: "User tidak terdaftar di aplikasi",
+          message: "QR Code kadaluarsa silahkan generate ulang",
+          code: 400,
+        };
+      }
+
+      // await prisma.user.update({
+      //   where: {
+      //     id: user.id,
+      //   },
+      //   data: {
+      //     qrCode: "",
+      //   },
+      // });
+
+      const dateTime = new Date(reqData.date);
+      dateTime.setTime(dateTime.getTime() + 8 * 60 * 60 * 1000);
+      const date = new Date(dateTime.toISOString().split("T")[0]);
+      const hour = dateTime.getUTCHours();
+
+      let checkAbsentDate = await prisma.absentDate.findFirst({
+        where: {
+          date,
+        },
+      });
+
+      if (!checkAbsentDate) {
+        const createAbsentDate = await prisma.absentDate.create({
+          data: {
+            date,
+            dayStatus: "Kerja",
+            information: "Hari Kerja",
+          },
+        });
+
+        const readAllUser = await prisma.user.findMany({
+          skip: 1,
+          orderBy: [
+            {
+              createdAt: "asc",
+            },
+            {
+              name: "asc",
+            },
+          ],
+        });
+
+        const absentData = readAllUser.map((user) => ({
+          absentDateId: createAbsentDate.id,
+          userId: user.id,
+        }));
+
+        const createManyAbsent = await prisma.absent.createMany({
+          data: absentData,
+        });
+
+        checkAbsentDate = createAbsentDate;
+      }
+
+      let arrivalAbsent = false;
+      let returnAbsent = false;
+
+      if (hour >= 6 && hour <= 11) {
+        arrivalAbsent = true;
+      } else if (hour >= 12 && hour <= 14) {
+        returnAbsent = true;
+      } else {
+        return {
+          status: false,
+          message:
+            "Absensi tidak bisa dilakukan dalam jangkauan waktu jam 6 - 11 dan jam 12 - 14",
           code: 400,
         };
       }
 
       const findAbsentId = await prisma.absent.findFirst({
         where: {
-          userId: user.id,
           absentDateId: checkAbsentDate.id,
-        },
-        select: {
-          id: true,
+          userId: user.id,
         },
       });
 
-      if (!findAbsentId) {
-        return {
-          status: false,
-          message:
-            "User tidak terdaftar di absen tanggal ini, silahkan tambah manual",
-          code: 400,
-        };
-      }
+      const status =
+        (findAbsentId.arrivalAbsent || arrivalAbsent) &&
+        (findAbsentId.returnAbsent || returnAbsent)
+          ? "Hadir"
+          : null;
+
+      const message =
+        status === "Hadir"
+          ? `${user.name} dinyatakan hadir`
+          : `${user.name} absensi diterima`;
 
       const scanqr = await prisma.absent.update({
         where: {
           id: findAbsentId.id,
         },
         data: {
-          status: "Hadir",
+          arrivalAbsent: findAbsentId.arrivalAbsent || arrivalAbsent,
+          returnAbsent: findAbsentId.returnAbsent || returnAbsent,
+          status,
           information: "Hadir melalui scan",
         },
       });
 
       return {
         status: true,
-        message: "User dinyatakan hadir",
+        message,
         code: 200,
       };
     } catch (error) {

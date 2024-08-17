@@ -7,7 +7,7 @@ const adminAbsentController = new Router();
 
 adminAbsentController.post("/scan", async (req, res) => {
   const schema = Joi.object({
-    userId: Joi.string().required(),
+    qrcode: Joi.string().required(),
     date: Joi.string().required(),
   });
 
