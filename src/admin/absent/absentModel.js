@@ -23,14 +23,14 @@ class AbsentModel {
         };
       }
 
-      // await prisma.user.update({
-      //   where: {
-      //     id: user.id,
-      //   },
-      //   data: {
-      //     qrCode: "",
-      //   },
-      // });
+      await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          qrCode: "",
+        },
+      });
 
       const dateTime = new Date(reqData.date);
       dateTime.setTime(dateTime.getTime() + 8 * 60 * 60 * 1000);
@@ -78,11 +78,14 @@ class AbsentModel {
 
       let arrivalAbsent = false;
       let returnAbsent = false;
+      let absentTime = "";
 
       if (hour >= 6 && hour <= 11) {
         arrivalAbsent = true;
+        absentTime = " datang ";
       } else if (hour >= 12 && hour <= 14) {
         returnAbsent = true;
+        absentTime = " pulang ";
       } else {
         return {
           status: false,
@@ -108,7 +111,7 @@ class AbsentModel {
       const message =
         status === "Hadir"
           ? `${user.name} dinyatakan hadir`
-          : `${user.name} absensi diterima`;
+          : `Absensi${absentTime}${user.name} diterima`;
 
       const scanqr = await prisma.absent.update({
         where: {
