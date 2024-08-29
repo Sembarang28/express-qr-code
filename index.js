@@ -14,7 +14,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "development" || !process.env.NODE_ENV
-        ? "http://localhost:4173"
+        ? "http://localhost:5173"
         : process.env.FRONT_URL,
     credential: true,
   }),

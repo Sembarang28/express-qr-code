@@ -51,11 +51,8 @@ adminPermissionController.post(
 );
 
 adminPermissionController.get("/all", async (req, res) => {
-  const { search, page } = req.query;
-  const readAllPermission = await permissionModel.readAllPermission(
-    Number(page),
-    search,
-  );
+  const { search } = req.query;
+  const readAllPermission = await permissionModel.readAllPermission(search);
   return response(res, readAllPermission);
 });
 

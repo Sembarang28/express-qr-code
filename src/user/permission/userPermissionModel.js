@@ -29,20 +29,8 @@ class UserPermissionModel {
     }
   }
 
-  async readAllPermission(userId, page, search) {
+  async readAllPermission(userId, search) {
     try {
-      const countPermission = await prisma.permission.count({
-        where: {
-          userId,
-          user: {
-            name: { contains: search, mode: "insensitive" },
-          },
-        },
-      });
-
-      const totalPages = Math.ceil(countPermission / 15);
-      const offset = (page - 1) * 15;
-
       const readAllPermission = await prisma.permission.findMany({
         where: {
           userId,
@@ -67,8 +55,6 @@ class UserPermissionModel {
         orderBy: {
           createdAt: "desc",
         },
-        take: 15,
-        skip: offset,
       });
 
       let permissionData = [];
@@ -89,10 +75,7 @@ class UserPermissionModel {
         status: true,
         message: "Data berhasil ditemukan",
         code: 200,
-        data: {
-          permission: permissionData,
-          totalPages,
-        },
+        data: permissionData,
       };
     } catch (error) {
       console.log("readAllPermission module error: ", error);

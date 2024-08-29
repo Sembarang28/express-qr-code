@@ -53,10 +53,9 @@ userPermissionController.post(
 
 userPermissionController.get("/all", async (req, res) => {
   const userId = req.user.id;
-  const { page, search } = req.query;
+  const { search } = req.query;
   const readAllPermission = await userPermissionModel.readAllPermission(
     userId,
-    Number(page),
     search,
   );
   return response(res, readAllPermission);
