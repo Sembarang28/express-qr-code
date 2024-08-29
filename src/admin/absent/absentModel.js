@@ -95,12 +95,25 @@ class AbsentModel {
         };
       }
 
-      const findAbsentId = await prisma.absent.findFirst({
+      let findAbsentId = await prisma.absent.findFirst({
         where: {
           absentDateId: checkAbsentDate.id,
           userId: user.id,
         },
       });
+
+      if (!findAbsentId) {
+        const createAbsent = await prisma.absent.create({
+          data: {
+            absentDateId: checkAbsentDate.id,
+            userId: user.id,
+            status: null,
+            information: null,
+          },
+        });
+
+        findAbsentId = createAbsent;
+      }
 
       const status =
         (findAbsentId.arrivalAbsent || arrivalAbsent) &&

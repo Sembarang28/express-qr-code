@@ -2,6 +2,7 @@ const { Router } = require("express");
 const Joi = require("joi");
 const absentModel = require("./absentModel");
 const response = require("../../config/response");
+const haversineFormula = require("../../config/helpers");
 
 const adminAbsentController = new Router();
 
@@ -9,6 +10,8 @@ adminAbsentController.post("/scan", async (req, res) => {
   const schema = Joi.object({
     qrcode: Joi.string().required(),
     date: Joi.string().required(),
+    latitude: Joi.number().required(),
+    longitude: Joi.number().required(),
   });
 
   const validation = schema.validate(req.body);
@@ -23,6 +26,19 @@ adminAbsentController.post("/scan", async (req, res) => {
       message: "Lengkapi inputan data",
       code: 422,
       error: errorDetails.join(", "),
+    };
+
+    return response(res, responseBody);
+  }
+
+  const distance = haversineFormula(req.body.latitude, req.body.longitude);
+  console.log(distance);
+
+  if (!(distance <= 30)) {
+    const responseBody = {
+      status: false,
+      message: "Gagal absensi! Absensi tidak bisa dilakukan di luar sekolah!",
+      code: 400,
     };
 
     return response(res, responseBody);
