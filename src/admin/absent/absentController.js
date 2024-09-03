@@ -82,7 +82,7 @@ adminAbsentController.get("/all", async (req, res) => {
   return response(res, readAllAbsent);
 });
 
-adminAbsentController.get("/date", async (req, res) => {
+adminAbsentController.get("/day", async (req, res) => {
   const schema = Joi.object({
     date: Joi.string().required(),
   });

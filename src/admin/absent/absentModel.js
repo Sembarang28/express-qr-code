@@ -332,6 +332,9 @@ class AbsentModel {
           dayStatus: true,
           information: true,
         },
+        orderBy: {
+          date: "desc",
+        },
       });
 
       const absentDateData = [];
