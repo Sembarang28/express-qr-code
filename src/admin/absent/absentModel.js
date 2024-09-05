@@ -3,6 +3,26 @@ const prisma = require("../../config/db");
 class AbsentModel {
   async scanqr(reqData) {
     try {
+      const dateTime = new Date(reqData.date);
+      dateTime.setTime(dateTime.getTime() + 8 * 60 * 60 * 1000);
+      const date = new Date(dateTime.toISOString().split("T")[0]);
+      const hour = dateTime.getUTCHours();
+
+      if (hour >= 6 && hour <= 9) {
+        arrivalAbsent = true;
+        absentTime = " datang ";
+      } else if (hour >= 12 && hour <= 14) {
+        returnAbsent = true;
+        absentTime = " pulang ";
+      } else {
+        return {
+          status: false,
+          message:
+            "Absensi tidak bisa dilakukan dalam jangkauan waktu jam 6 - 11 dan jam 12 - 14",
+          code: 400,
+        };
+      }
+
       const user = await prisma.user.findUnique({
         where: {
           qrCode: reqData.qrcode,
@@ -31,11 +51,6 @@ class AbsentModel {
           qrCode: "",
         },
       });
-
-      const dateTime = new Date(reqData.date);
-      dateTime.setTime(dateTime.getTime() + 8 * 60 * 60 * 1000);
-      const date = new Date(dateTime.toISOString().split("T")[0]);
-      const hour = dateTime.getUTCHours();
 
       let checkAbsentDate = await prisma.absentDate.findFirst({
         where: {
@@ -79,21 +94,6 @@ class AbsentModel {
       let arrivalAbsent = false;
       let returnAbsent = false;
       let absentTime = "";
-
-      if (hour >= 6 && hour <= 11) {
-        arrivalAbsent = true;
-        absentTime = " datang ";
-      } else if (hour >= 12 && hour <= 14) {
-        returnAbsent = true;
-        absentTime = " pulang ";
-      } else {
-        return {
-          status: false,
-          message:
-            "Absensi tidak bisa dilakukan dalam jangkauan waktu jam 6 - 11 dan jam 12 - 14",
-          code: 400,
-        };
-      }
 
       let findAbsentId = await prisma.absent.findFirst({
         where: {
