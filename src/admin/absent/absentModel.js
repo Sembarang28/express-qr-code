@@ -247,6 +247,9 @@ class AbsentModel {
           absentDate: {
             date,
           },
+          user: {
+            role: "user",
+          },
         },
         select: {
           id: true,
@@ -400,6 +403,7 @@ class AbsentModel {
 
       const readAllAbsentByMonth = await prisma.user.findMany({
         where: {
+          role: "user",
           absent: {
             some: {
               absentDateId: {
