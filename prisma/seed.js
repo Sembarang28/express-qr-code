@@ -15,6 +15,12 @@ async function main() {
         employeeStatus: "PNS",
         role: "admin",
       },
+      {
+        name: "Admin",
+        email: "test@gmail.com",
+        password,
+        role: "admin",
+      },
     ],
   });
 }

@@ -8,11 +8,7 @@ const authController = new Router();
 authController.post("/login", async (req, res) => {
   const schema = Joi.object({
     email: Joi.string().required(),
-    password: Joi.string()
-      .min(8)
-      .max(64)
-      .pattern(new RegExp("^[a-zA-Z0-9]{8,64}$"))
-      .required(),
+    password: Joi.string().required(),
   });
 
   const validation = schema.validate(req.body);
@@ -24,7 +20,7 @@ authController.post("/login", async (req, res) => {
 
     const responseBody = {
       status: false,
-      message: "failed",
+      message: "Data yang diinput tidak sesuai!",
       code: 422,
       error: errorDetails.join(", "),
     };
