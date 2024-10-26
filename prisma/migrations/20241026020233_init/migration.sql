@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "user" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE "user" (
 -- CreateTable
 CREATE TABLE "access_token" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
     "token" VARCHAR(255),
     "expired" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -43,7 +43,7 @@ CREATE TABLE "absent_date" (
 CREATE TABLE "absent" (
     "id" TEXT NOT NULL,
     "absentDateId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
     "status" VARCHAR(100),
     "arrivalAbsent" BOOLEAN,
     "returnAbsent" BOOLEAN,
@@ -57,7 +57,7 @@ CREATE TABLE "absent" (
 -- CreateTable
 CREATE TABLE "permission" (
     "id" SERIAL NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
     "permission" VARCHAR(255) NOT NULL,
     "information" TEXT,
     "photo" VARCHAR(255),
@@ -71,7 +71,7 @@ CREATE TABLE "permission" (
 -- CreateTable
 CREATE TABLE "otp" (
     "id" SERIAL NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "otp" VARCHAR(255) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
