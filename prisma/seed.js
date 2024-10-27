@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const prisma = require("../src/config/db");
-const { nanoid } = require("nanoid");
 
 async function main() {
   const password = bcrypt.hashSync("12345678", 12);

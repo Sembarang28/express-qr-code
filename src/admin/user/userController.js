@@ -55,7 +55,7 @@ userController.get("/all", async (req, res) => {
 
 userController.get("/:userId", async (req, res) => {
   const { userId } = req.params;
-  const readUserById = await userModel.readUserById(userId);
+  const readUserById = await userModel.readUserById(Number(userId));
   return response(res, readUserById);
 });
 
@@ -87,7 +87,7 @@ userController.put("/pass/:userId", async (req, res) => {
   }
 
   const updateUserPasswordById = await userModel.updateUserPasswordById(
-    userId,
+    Number(userId),
     req.body,
   );
   return response(res, updateUserPasswordById);
@@ -128,7 +128,7 @@ userController.put("/:userId", multer.userImg("image"), async (req, res) => {
   const imagePath = imageName ? `public/userImg/${imageName}` : "";
 
   const updateUserById = await userModel.updateUserAccountById(
-    userId,
+    Number(userId),
     req.body,
     imagePath,
   );
@@ -138,7 +138,7 @@ userController.put("/:userId", multer.userImg("image"), async (req, res) => {
 
 userController.delete("/:userId", async (req, res) => {
   const { userId } = req.params;
-  const deleteUserById = await userModel.deleteUser(userId);
+  const deleteUserById = await userModel.deleteUser(Number(userId));
   return response(res, deleteUserById);
 });
 
