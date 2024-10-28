@@ -6,7 +6,7 @@ class AdminPermissionModel {
     try {
       const createPermission = await prisma.permission.create({
         data: {
-          userId: reqData.userId,
+          userId: Number(reqData.userId),
           permission: reqData.permission,
           information: reqData.information,
           photo,
@@ -56,7 +56,7 @@ class AdminPermissionModel {
         },
       });
 
-      let permissionData = [];
+      const permissionData = [];
 
       for (const permission of readAllPermission) {
         const object = {
@@ -155,7 +155,7 @@ class AdminPermissionModel {
           id,
         },
         data: {
-          userId: reqData.userId,
+          userId: Number(reqData.userId),
           permission: reqData.permission,
           information: reqData.information,
           photo: photoUrl,

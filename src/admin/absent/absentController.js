@@ -51,7 +51,7 @@ adminAbsentController.post("/scan", async (req, res) => {
 adminAbsentController.post("/", async (req, res) => {
   const schema = Joi.object({
     absentDateId: Joi.string().required(),
-    userId: Joi.string().required(),
+    userId: Joi.number().required(),
     status: Joi.optional(),
     information: Joi.optional(),
   });

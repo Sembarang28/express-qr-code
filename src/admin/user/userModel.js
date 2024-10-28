@@ -29,7 +29,7 @@ class UserModel {
       console.error("createUser module error, ", error);
       return {
         status: false,
-        message: error.message,
+        message: "Email telah digunakan!",
         code: 500,
       };
     }
@@ -37,13 +37,15 @@ class UserModel {
 
   async readAllUser(search) {
     try {
+      const trimSearch = search.trim();
+      console.log(search);
       const readAllUser = await prisma.user.findMany({
         where: {
           OR: [
-            { name: { contains: search, mode: "insensitive" } },
-            { nip: { contains: search, mode: "insensitive" } },
-            { employeeStatus: { contains: search, mode: "insensitive" } },
-            { role: { contains: search, mode: "insensitive" } },
+            { name: { contains: trimSearch, mode: "insensitive" } },
+            { nip: { contains: trimSearch, mode: "insensitive" } },
+            { employeeStatus: { contains: trimSearch, mode: "insensitive" } },
+            { role: { contains: trimSearch, mode: "insensitive" } },
           ],
         },
         select: {
@@ -151,7 +153,7 @@ class UserModel {
       console.error("updateUserById module error, ", error);
       return {
         status: false,
-        message: error.message,
+        message: "Email telah digunakan!",
         code: 500,
       };
     }
@@ -193,7 +195,9 @@ class UserModel {
         },
       });
 
-      fs.unlinkSync(deleteUserAccountById.photo);
+      if (deleteUserAccountById.photo) {
+        fs.unlinkSync(deleteUserAccountById.photo);
+      }
 
       return {
         status: true,

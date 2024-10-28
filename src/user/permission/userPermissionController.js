@@ -42,7 +42,7 @@ userPermissionController.post(
     const imagePath = imageName ? `public/permissionImg/${imageName}` : null;
 
     const createPermission = await userPermissionModel.createPermission(
-      userId,
+      Number(userId),
       req.body,
       imagePath,
     );
@@ -55,7 +55,7 @@ userPermissionController.get("/all", async (req, res) => {
   const userId = req.user.id;
   const { search } = req.query;
   const readAllPermission = await userPermissionModel.readAllPermission(
-    userId,
+    Number(userId),
     search,
   );
   return response(res, readAllPermission);
