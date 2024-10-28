@@ -60,7 +60,7 @@ async function updateAbsent() {
 }
 
 cron.schedule(
-  "00 05 * * *",
+  "00 06 * * *",
   () => {
     createAbsentDate();
     console.log("create absent date executed!");
