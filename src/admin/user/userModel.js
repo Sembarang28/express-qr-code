@@ -1,7 +1,6 @@
 const prisma = require("../../config/db");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
-const { nanoid } = require("nanoid");
 
 class UserModel {
   async creatUser(reqData, photo) {

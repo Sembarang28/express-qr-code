@@ -12,10 +12,9 @@ const app = express();
 
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "development" || !process.env.NODE_ENV
-        ? "http://localhost:5173"
-        : process.env.FRONT_URL,
+    origin: process.env.NODE_ENV === "development" || !process.env.NODE_ENV
+      ? "http://localhost:5173"
+      : process.env.FRONT_URL,
     credential: true,
   }),
 );
