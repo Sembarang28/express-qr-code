@@ -10,9 +10,7 @@ dotenv.config();
 const port = process.env.PORT || 8000;
 const app = express();
 
-app.use(
-  cors(),
-);
+app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
