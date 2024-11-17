@@ -11,12 +11,7 @@ const port = process.env.PORT || 8000;
 const app = express();
 
 app.use(
-  cors({
-    origin: process.env.NODE_ENV === "development" || !process.env.NODE_ENV
-      ? "http://react-qr:4173"
-      : process.env.FRONT_URL,
-    credential: true,
-  }),
+  cors(),
 );
 app.use(bodyParser.json());
 app.use(express.json());

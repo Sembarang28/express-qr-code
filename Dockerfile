@@ -13,11 +13,13 @@ RUN npm install
 # Copy application code
 COPY . .
 
+# Expose Port 8000
 EXPOSE 8000
 
 # Install OpenSSL 1.1
 RUN apt-get update -y && apt-get install -y openssl
 
+# Generate Prisma Client
 RUN npx prisma generate
 
 # Set the command to start the server
