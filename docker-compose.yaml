@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 521m
+    ports:
+      - 8080:8080
+    networks:
+      - qr-absent-app
+  
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - qr-absent-app
+
+  server:
+    build: ./server
+    container_name: server-qr-absent
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://root:admin123@postgres:5432/absensi
+    depends_on:
+      - postgres
+    networks:
+      - qr-absent-app
+
+  client:
+    build: ./client
+    container_name: client-qr-absent
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    networks:
+      - qr-absent-app
+
+volumes:
+  postgres_data:
+
+networks:
+  qr-absent-app:
