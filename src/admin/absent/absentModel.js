@@ -8,20 +8,20 @@ class AbsentModel {
       const date = new Date(dateTime.toISOString().split("T")[0]);
       const hour = dateTime.getUTCHours();
 
-      if (hour >= 6 && hour <= 11) {
-        arrivalAbsent = true;
-        absentTime = " datang ";
-      } else if (hour >= 12 && hour <= 14) {
-        returnAbsent = true;
-        absentTime = " pulang ";
-      } else {
-        return {
-          status: false,
-          message:
-            "Absensi tidak bisa dilakukan dalam jangkauan waktu jam 6 - 11 dan jam 12 - 14",
-          code: 400,
-        };
-      }
+      // if (hour >= 6 && hour <= 11) {
+      //   arrivalAbsent = true;
+      //   absentTime = " datang ";
+      // } else if (hour >= 12 && hour <= 14) {
+      //   returnAbsent = true;
+      //   absentTime = " pulang ";
+      // } else {
+      //   return {
+      //     status: false,
+      //     message:
+      //       "Absensi tidak bisa dilakukan dalam jangkauan waktu jam 6 - 11 dan jam 12 - 14",
+      //     code: 400,
+      //   };
+      // }
 
       const user = await prisma.user.findUnique({
         where: {
@@ -91,9 +91,9 @@ class AbsentModel {
         checkAbsentDate = createAbsentDate;
       }
 
-      let arrivalAbsent = false;
-      let returnAbsent = false;
-      let absentTime = "";
+      // let arrivalAbsent = false;
+      // let returnAbsent = false;
+      // let absentTime = "";
 
       let findAbsentId = await prisma.absent.findFirst({
         where: {
@@ -115,25 +115,23 @@ class AbsentModel {
         findAbsentId = createAbsent;
       }
 
-      const status =
-        (findAbsentId.arrivalAbsent || arrivalAbsent) &&
-          (findAbsentId.returnAbsent || returnAbsent)
-          ? "Hadir"
-          : null;
+      // const status =
+      //   (findAbsentId.arrivalAbsent || arrivalAbsent) &&
+      //     (findAbsentId.returnAbsent || returnAbsent)
+      //     ? "Hadir"
+      //     : null;
 
-      const message =
-        status === "Hadir"
-          ? `${user.name} dinyatakan hadir`
-          : `Absensi${absentTime}${user.name} diterima`;
+      // const message =
+      //   status === "Hadir"
+      //     ? `${user.name} dinyatakan hadir`
+      //     : `Absensi${absentTime}${user.name} diterima`;
 
       const scanqr = await prisma.absent.update({
         where: {
           id: findAbsentId.id,
         },
         data: {
-          arrivalAbsent: findAbsentId.arrivalAbsent || arrivalAbsent,
-          returnAbsent: findAbsentId.returnAbsent || returnAbsent,
-          status,
+          status: "Hadir",
           information: "Hadir melalui scan",
         },
       });
