@@ -22,5 +22,9 @@ RUN apt-get update -y && apt-get install -y openssl
 # Generate Prisma Client
 RUN npx prisma generate
 
+RUN npx prisma migrate dev
+
+RUN npx prisma db seed
+
 # Set the command to start the server
 CMD ["npm", "start"]

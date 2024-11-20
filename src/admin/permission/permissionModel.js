@@ -186,7 +186,9 @@ class AdminPermissionModel {
         },
       });
 
-      fs.unlinkSync(deletePermissionById.photo);
+      if (deletePermissionById.photo) {
+        fs.unlinkSync(deletePermissionById.photo);
+      }
 
       return {
         status: true,
