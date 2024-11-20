@@ -43,15 +43,6 @@ class AbsentModel {
         };
       }
 
-      await prisma.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          qrCode: "",
-        },
-      });
-
       let checkAbsentDate = await prisma.absentDate.findFirst({
         where: {
           date,
@@ -126,6 +117,8 @@ class AbsentModel {
       //     ? `${user.name} dinyatakan hadir`
       //     : `Absensi${absentTime}${user.name} diterima`;
 
+      console.log('test')
+
       const scanqr = await prisma.absent.update({
         where: {
           id: findAbsentId.id,
@@ -138,7 +131,7 @@ class AbsentModel {
 
       return {
         status: true,
-        message,
+        message: "Absensi Berhasil",
         code: 200,
       };
     } catch (error) {

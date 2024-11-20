@@ -31,18 +31,18 @@ adminAbsentController.post("/scan", async (req, res) => {
     return response(res, responseBody);
   }
 
-  const distance = haversineFormula(req.body.latitude, req.body.longitude);
-  console.log(distance);
+  // const distance = haversineFormula(req.body.latitude, req.body.longitude);
+  // console.log(distance);
 
-  if (!(distance <= 30)) {
-    const responseBody = {
-      status: false,
-      message: "Gagal absensi! Absensi tidak bisa dilakukan di luar sekolah!",
-      code: 400,
-    };
+  // if (!(distance <= 30)) {
+  //   const responseBody = {
+  //     status: false,
+  //     message: "Gagal absensi! Absensi tidak bisa dilakukan di luar sekolah!",
+  //     code: 400,
+  //   };
 
-    return response(res, responseBody);
-  }
+  //   return response(res, responseBody);
+  // }
 
   const scanqr = await absentModel.scanqr(req.body);
   return response(res, scanqr);
