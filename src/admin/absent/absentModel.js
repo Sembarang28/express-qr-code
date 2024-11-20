@@ -8,7 +8,7 @@ class AbsentModel {
       const date = new Date(dateTime.toISOString().split("T")[0]);
       const hour = dateTime.getUTCHours();
 
-      if (hour >= 6 && hour <= 9) {
+      if (hour >= 6 && hour <= 11) {
         arrivalAbsent = true;
         absentTime = " datang ";
       } else if (hour >= 12 && hour <= 14) {
@@ -117,7 +117,7 @@ class AbsentModel {
 
       const status =
         (findAbsentId.arrivalAbsent || arrivalAbsent) &&
-        (findAbsentId.returnAbsent || returnAbsent)
+          (findAbsentId.returnAbsent || returnAbsent)
           ? "Hadir"
           : null;
 
